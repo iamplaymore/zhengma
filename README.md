@@ -1,6 +1,6 @@
 ##郑码输入法词库(for OpenVanilla On Mac Leopard 10.64)
 
-- 汉字(拼音, 字频)来源:[Lingua.mtsu.edu](http://lingua.mtsu.edu/chinese-computing/statistics/) 
+- 汉字(拼音, 字频)来源: [Lingua.mtsu.edu](http://lingua.mtsu.edu/chinese-computing/statistics/) 
 - 词汇以及词频来源: [搜狗实验室](http://www.sogou.com/labs/dl/w.html)
 - 单字构词码来源: zm66.txt(自己以前整理的文件, 出处忘记了)
 - 词汇构词码来源: ZMGB18J_utf8.txt (大字集郑码, 来源于官方光盘)
@@ -13,9 +13,8 @@
 - 多字词：p11+p21+p31+p41+p51(增加第五字第一码) 
 
 ### 安装香草输入法
- http://openvanilla.org/
-- 把码表（附件解压后-> zhengma.cin）复制到文件夹：
-~/Library/Application Support/OpenVanilla/UserData/OVIMGeneric
+- 先到 http://openvanilla.org/ 下载最新的香草输入法;
+- 把码表（附件解压后-> zhengma.cin）复制到文件夹： ~/Library/Application Support/OpenVanilla/UserData/OVIMGeneric
 - 注销再登陆即可(单纯重启Finder是不行的)
 - 选择香草输入法，再点一次香草图标，选zhengma
 
