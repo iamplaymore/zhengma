@@ -1,0 +1,141 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
+#author:         rex
+#blog:           http://iregex.org
+#filename        zm.py
+#created:        2010-11-07 18:35
+
+import getopt, sys 
+import commands
+
+def init_code():
+    '''get code for each character; each code is 2 byte long'''
+    f=open("ZM66.txt")
+    words=f.readlines()
+    chars={}
+    for w in words:
+        w=w.strip()
+        char=w.split(';')[0]
+        code=w.split(';')[-1]
+        chars[char]=code
+    return chars
+
+
+def byte2words(s):
+    '''split utf8 chinise string to single chars'''
+    words=[]
+    for i in range(len(s)/3):
+        char=s[i*3:(i+1)*3]
+        words.append(char)
+    return words
+
+def gen_code(words, goucima):
+    '''generate zhengma code for a given chinese words, the length of which is more than 2 chars'''
+    chs=byte2words(words)
+    length=len(chs)
+
+    if length<=1:
+        return ""
+    if length==2:
+        try: return goucima[chs[0]][:2]+goucima[chs[1]][:2]
+        except: print words, "2s error!"
+
+    elif length==3:
+        try: return goucima[chs[0]][0]+goucima[chs[1]][:2]+goucima[chs[2]][:2]
+        except: print words, "3s error!"
+
+    elif length==4:
+        try: return goucima[chs[0]][0]+goucima[chs[1]][0]+goucima[chs[2]][0]+goucima[chs[3]][:2]
+        except: print words, "4s error!"
+    elif length>=5:
+        try:
+            return goucima[chs[0]][0]+goucima[chs[1]][0]+goucima[chs[2]][0]+goucima[chs[3]][0]+goucima[chs[4]][0]
+        except: print words, "5s error!"
+
+def usage():
+    print '''Usage:
+    zm -f [Filename]    #add word list to dict. the words are seperated by line or white space
+    zm [Word1] [Word2...] #add words to dict. words are seperated by white spaces
+    zm -h               #print this help message
+ 
+    '''
+def file2list(filename):
+    '''open the file and generate a list of words'''
+    f=open(filename)
+    c=f.read()
+    f.close()
+    c=c.replace("\n"," ")
+    return c.split()
+
+def get_vanilla():
+    return commands.getoutput('''echo "/Users/`whoami`/Library/Application Support/OpenVanilla/UserData/OVIMGeneric/zhengma.cin"''')
+
+def killByName(name):
+    'kill a process that with name'
+    result=commands.getoutput("""ps aux | grep -i "%s" | awk '{print $2}' | xargs kill -9""" % name)
+
+
+def append_dict(filename, words):
+    try:
+        f=open(filename)
+        lines=f.readlines()
+        f.close()
+        try:
+            f=open(filename, "w")
+            lines=lines[:-1]+words+[lines[-1],]
+            f.writelines(lines)
+            f.close() 
+            killByName("openvanilla")
+            print "%d words are successfully saved!\n" % (len(words))
+        except:
+            print "writing records error! records are: %s" % "".join(words)
+    except:
+        print "open %s error! \n" % filename
+
+def list2zm(words, goucima):
+    ''' a list of words'''
+    result=[]
+
+    for word in words:
+        code=gen_code(word, goucima)
+        result.append('%s %s\n' % (code, word))
+    length=len(result)
+    print "%d item(s) created\n" % length,  
+    return result
+
+def save2dict(list, goucima):
+    filename=get_vanilla()
+    zm=list2zm(list, goucima)
+    append_dict(filename, zm)
+
+    
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hf:", ["help", "file="])
+    except getopt.GetoptError, err:
+        # print help information and exit:
+        print str(err) # will print something like "option -a not recognized"
+        usage()
+        sys.exit(2)
+
+    filename= ""
+    codes=init_code()
+
+    for o, a in opts:
+        if o in ("-h", "--help"):
+            usage()
+            sys.exit()
+        elif o in ("-f", "--file"):
+            filename=a
+            save2dict(file2list(a), codes)
+#process file
+        else:
+            pass
+            
+    if not opts:
+        save2dict(args, codes)
+
+if __name__ == "__main__":
+    main()
+
