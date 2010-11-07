@@ -11,7 +11,8 @@ import commands
 
 def init_code():
     '''get code for each character; each code is 2 byte long'''
-    f=open("ZM66.txt")
+    path="/".join(sys.argv[0].split("/")[:-1])
+    f=open("/%s/ZM66.txt" % path)
     words=f.readlines()
     chars={}
     for w in words:
@@ -54,12 +55,13 @@ def gen_code(words, goucima):
         except: print words, "5s error!"
 
 def usage():
+    script=sys.argv[0].split('/')[-1]
     print '''Usage:
-    zm -f [Filename]    #add word list to dict. the words are seperated by line or white space
-    zm [Word1] [Word2...] #add words to dict. words are seperated by white spaces
-    zm -h               #print this help message
+    %s -f [Filename]    #add word list to dict. the words are seperated by line or white space
+    %s [Word1] [Word2...] #add words to dict. words are seperated by white spaces
+    %s -h               #print this help message
  
-    '''
+    ''' % (script, script, script)
 def file2list(filename):
     '''open the file and generate a list of words'''
     f=open(filename)
@@ -134,7 +136,11 @@ def main():
             pass
             
     if not opts:
-        save2dict(args, codes)
+        if not args:
+            usage()
+            sys.exit()
+        else:
+            save2dict(args, codes)
 
 if __name__ == "__main__":
     main()
