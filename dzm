@@ -1,0 +1,8 @@
+#!/bin/bash 
+
+#add new words entry
+path="/Users/`whoami`/Library/Application Support/OpenVanilla/UserData/OVIMGeneric"
+dict="$path/"zhengma.cin
+new_dict="$dict".bkup
+grep -v "$1" "$dict" >"$new_dict"
+mv "$new_dict" "$dict"
